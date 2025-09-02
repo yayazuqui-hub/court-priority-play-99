@@ -5,11 +5,23 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, DollarSign, Users, Clock, CheckCircle, Copy, Smartphone } from 'lucide-react';
+import { ArrowLeft, DollarSign, Users, Clock, CheckCircle, Copy, Smartphone, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import volleyballLogo from '@/assets/volleyball-logo.png';
 import PixCodeForm from '@/components/PixCodeForm';
 import UserExpensesForm from '@/components/UserExpensesForm';
+import PaymentEditForm from '@/components/PaymentEditForm';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Payment {
   id: string;
@@ -45,6 +57,7 @@ export default function Payments() {
   const [loading, setLoading] = useState(true);
   const [hasActiveBookings, setHasActiveBookings] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -172,6 +185,36 @@ export default function Payments() {
     }
   };
 
+  const deletePayment = async (paymentId: string) => {
+    try {
+      const { error } = await supabase
+        .from('payments')
+        .update({ status: 'deleted' })
+        .eq('id', paymentId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: "Pagamento excluído com sucesso!",
+      });
+
+      fetchPayments();
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível excluir o pagamento",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditSuccess = () => {
+    setEditingPaymentId(null);
+    fetchPayments();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -233,9 +276,51 @@ export default function Payments() {
                           <DollarSign className="h-5 w-5" />
                           Pagamento - {new Date(payment.game_date).toLocaleDateString('pt-BR')}
                         </div>
-                        <Badge variant="secondary" className="bg-white/20 text-white">
-                          {paidUsers.length}/{allPaymentUsers.length} pagos
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="bg-white/20 text-white">
+                            {paidUsers.length}/{allPaymentUsers.length} pagos
+                          </Badge>
+                          {isAdmin && (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setEditingPaymentId(payment.id)}
+                                className="text-white hover:bg-white/20"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-white hover:bg-white/20"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Excluir Pagamento</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Tem certeza que deseja excluir este pagamento? Esta ação não pode ser desfeita.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => deletePayment(payment.id)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Excluir
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          )}
+                        </div>
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
@@ -349,6 +434,15 @@ export default function Payments() {
                       )}
                     </CardContent>
                   </Card>
+
+                  {/* Edit Payment Form - only for admins */}
+                  {isAdmin && editingPaymentId === payment.id && (
+                    <PaymentEditForm 
+                      payment={payment} 
+                      onCancel={() => setEditingPaymentId(null)}
+                      onSuccess={handleEditSuccess}
+                    />
+                  )}
 
                   {/* User Expenses Form - only for users with active bookings */}
                   {hasActiveBookings && (
