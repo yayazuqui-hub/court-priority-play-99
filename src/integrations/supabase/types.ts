@@ -206,18 +206,21 @@ export type Database = {
       }
       priority_queue: {
         Row: {
+          added_at: string | null
           created_at: string
           id: string
           position: number
           user_id: string
         }
         Insert: {
+          added_at?: string | null
           created_at?: string
           id?: string
           position: number
           user_id: string
         }
         Update: {
+          added_at?: string | null
           created_at?: string
           id?: string
           position?: number
