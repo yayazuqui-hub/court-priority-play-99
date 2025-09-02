@@ -128,12 +128,12 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Check if priority timer was recently started (within last hour to prevent duplicates)
+    // Check if priority timer was recently started (within last 24 hours to prevent duplicates)
     if (systemState.priority_timer_started_at) {
       const lastStartTime = new Date(systemState.priority_timer_started_at)
       const hoursSinceLastStart = (now.getTime() - lastStartTime.getTime()) / (1000 * 60 * 60)
       
-      if (hoursSinceLastStart < 1) {
+      if (hoursSinceLastStart < 24) {
         console.log('Priority timer was started recently, skipping')
         return new Response(
           JSON.stringify({ 

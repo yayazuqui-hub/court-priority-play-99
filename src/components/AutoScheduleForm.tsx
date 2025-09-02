@@ -238,9 +238,10 @@ export function AutoScheduleForm() {
 
         <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
           <p className="font-medium">ℹ️ Como funciona:</p>
-          <p>• Nos horários configurados, o sistema automaticamente iniciará o timer de prioridade</p>
-          <p>• Os primeiros 12 usuários terão 10 minutos para fazer suas marcações</p>
-          <p>• Após o timer, o sistema será liberado para todos</p>
+          <p>• Nos horários configurados, o sistema automaticamente iniciará o período de prioridade de 24 horas</p>
+          <p>• Durante essas 24 horas, apenas os primeiros 12 usuários da fila podem fazer marcações</p>
+          <p>• Cada usuário tem 2 horas para fazer sua marcação, após isso é removido da fila</p>
+          <p>• Após as 24 horas, o sistema permanece fechado até o próximo horário agendado</p>
         </div>
       </CardContent>
     </Card>

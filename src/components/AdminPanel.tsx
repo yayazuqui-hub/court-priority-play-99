@@ -153,7 +153,7 @@ export function AdminPanel({ systemState, priorityQueue, bookings }: AdminPanelP
               className="bg-warning text-warning-foreground hover:bg-warning/90"
             >
               <Clock className="h-4 w-4 mr-2" />
-              Iniciar Timer (10min)
+              Iniciar Timer (24hrs)
             </Button>
             
             <Button

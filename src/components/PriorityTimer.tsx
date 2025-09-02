@@ -80,7 +80,7 @@ export function PriorityTimer({ systemState }: PriorityTimerProps) {
               ⏰ {formatTime(timeLeft)}
             </p>
             <p className="text-sm text-muted-foreground">
-              Tempo restante para os 12 primeiros usuários
+              Tempo restante da fila de prioridade (24 horas)
             </p>
           </div>
         ) : (

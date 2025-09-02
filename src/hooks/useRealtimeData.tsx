@@ -47,6 +47,16 @@ export interface GameSchedule {
   created_at: string;
 }
 
+export interface AutoSchedule {
+  id: string;
+  day_of_week: number;
+  start_time: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
+
 export function useRealtimeData() {
   const [systemState, setSystemState] = useState<SystemState | null>(null);
   const [priorityQueue, setPriorityQueue] = useState<PriorityQueue[]>([]);
