@@ -187,12 +187,24 @@ export default function Payments() {
 
   const deletePayment = async (paymentId: string) => {
     try {
+      console.log('Attempting to delete payment:', paymentId);
+      console.log('Current user:', user?.id);
+      console.log('Is admin:', isAdmin);
+
+      // First check if user is admin
+      if (!isAdmin) {
+        throw new Error('Você não tem permissão para excluir pagamentos');
+      }
+
       const { error } = await supabase
         .from('payments')
         .update({ status: 'deleted' })
         .eq('id', paymentId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       toast({
         title: "Sucesso",
@@ -200,11 +212,11 @@ export default function Payments() {
       });
 
       fetchPayments();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting payment:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível excluir o pagamento",
+        description: error.message || "Não foi possível excluir o pagamento",
         variant: "destructive",
       });
     }
