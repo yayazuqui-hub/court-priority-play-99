@@ -204,6 +204,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pix_codes: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          payment_id: string
+          pix_code: string
+          pix_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          payment_id: string
+          pix_code: string
+          pix_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          payment_id?: string
+          pix_code?: string
+          pix_key?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       priority_queue: {
         Row: {
           added_at: string | null
@@ -296,6 +326,36 @@ export type Database = {
           priority_timer_duration?: number
           priority_timer_started_at?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          payment_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description: string
+          id?: string
+          payment_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          payment_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
