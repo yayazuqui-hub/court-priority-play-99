@@ -197,9 +197,7 @@ export function BookingsList({ bookings, isAdmin = false }: BookingsListProps) {
                             )}
                           </div>
                           
-                          <div className="text-sm text-muted-foreground space-y-1">
-                            <p>Marcado por: {entry.bookedBy}</p>
-                            <p>Email: {entry.email}</p>
+                          <div className="text-sm text-muted-foreground">
                             <p>Data: {formatDateTime(entry.createdAt)}</p>
                           </div>
                           
