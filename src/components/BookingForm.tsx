@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useWhatsAppNotifications } from '@/hooks/useWhatsAppNotifications';
 import { SystemState, PriorityQueue, Booking } from '@/hooks/useRealtimeData';
 
 interface BookingFormProps {
@@ -26,6 +27,7 @@ export function BookingForm({ systemState, priorityQueue, bookings, onBookingSuc
   
   const { user } = useAuth();
   const { toast } = useToast();
+  const { sendBookingNotification } = useWhatsAppNotifications();
 
   // Verificar se usuário já tem marcação ativa
   const userActiveBooking = bookings.find(booking => booking.user_id === user?.id);
@@ -163,6 +165,17 @@ export function BookingForm({ systemState, priorityQueue, bookings, onBookingSuc
           title: "Sucesso! 🎉",
           description: `Marcação ${isEditing ? 'atualizada' : 'realizada'} com sucesso!`,
         });
+        
+        // Enviar notificação WhatsApp se o usuário tiver telefone
+        if (userProfile.phone) {
+          try {
+            await sendBookingNotification(userProfile.phone, userProfile.name, isEditing);
+          } catch (notificationError) {
+            console.error('Erro ao enviar notificação WhatsApp:', notificationError);
+            // Não falhar a operação se a notificação falhar
+          }
+        }
+        
         if (!isEditing) {
           setPlayer2Name('');
           setPlayer2Level('iniciante');

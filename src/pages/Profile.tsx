@@ -17,6 +17,7 @@ interface UserProfile {
   email: string;
   gender: string;
   level: string;
+  phone: string;
 }
 
 const Profile = () => {
@@ -27,7 +28,8 @@ const Profile = () => {
     name: '',
     email: '',
     gender: '',
-    level: ''
+    level: '',
+    phone: ''
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -39,7 +41,7 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('name, email, gender, level')
+          .select('name, email, gender, level, phone')
           .eq('user_id', user.id)
           .single();
 
@@ -50,7 +52,8 @@ const Profile = () => {
             name: data.name || '',
             email: data.email || '',
             gender: data.gender || '',
-            level: data.level || ''
+            level: data.level || '',
+            phone: data.phone || ''
           });
         }
       } catch (error) {
@@ -79,7 +82,8 @@ const Profile = () => {
           name: profileData.name,
           email: profileData.email,
           gender: profileData.gender,
-          level: profileData.level
+          level: profileData.level,
+          phone: profileData.phone
         })
         .eq('user_id', user.id);
 
@@ -209,6 +213,20 @@ const Profile = () => {
                     <SelectItem value="avancado">Avançado</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">WhatsApp (opcional)</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={profileData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  placeholder="Ex: 5511999999999"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Para receber notificações via WhatsApp. Formato: código do país + DDD + número
+                </p>
               </div>
 
               <div className="pt-4">

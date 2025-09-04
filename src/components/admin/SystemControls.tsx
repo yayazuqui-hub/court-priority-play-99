@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useWhatsAppNotifications } from '@/hooks/useWhatsAppNotifications';
 import { SystemState } from '@/hooks/useRealtimeData';
 import { Settings, Clock, Play, Square } from 'lucide-react';
 
@@ -14,6 +15,7 @@ interface SystemControlsProps {
 export function SystemControls({ systemState }: SystemControlsProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { sendSystemOpenNotification } = useWhatsAppNotifications();
 
   const updateSystemState = async (updates: Partial<SystemState>) => {
     setLoading(true);
@@ -54,11 +56,33 @@ export function SystemControls({ systemState }: SystemControlsProps) {
   };
 
   const openForAll = async () => {
-    await updateSystemState({
+    const result = await updateSystemState({
       is_priority_mode: false,
       is_open_for_all: true,
       priority_timer_started_at: null
     });
+
+    // Enviar notificações WhatsApp para todos os usuários com telefone
+    try {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('phone')
+        .not('phone', 'is', null);
+
+      if (profiles && profiles.length > 0) {
+        const phones = profiles.map(p => p.phone).filter(Boolean);
+        if (phones.length > 0) {
+          await sendSystemOpenNotification(phones);
+          toast({
+            title: "Notificações enviadas",
+            description: `${phones.length} notificações WhatsApp enviadas`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao enviar notificações:', error);
+      // Não falhar a operação se as notificações falharem
+    }
   };
 
   const pauseSystem = async () => {

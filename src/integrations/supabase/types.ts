@@ -130,6 +130,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_logs: {
+        Row: {
+          created_at: string
+          green_api_response: Json | null
+          id: string
+          message: string
+          phone: string
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          green_api_response?: Json | null
+          id?: string
+          message: string
+          phone: string
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          green_api_response?: Json | null
+          id?: string
+          message?: string
+          phone?: string
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_users: {
         Row: {
           created_at: string
@@ -274,6 +307,7 @@ export type Database = {
           id: string
           level: string | null
           name: string
+          phone: string | null
           updated_at: string
           user_id: string
         }
@@ -284,6 +318,7 @@ export type Database = {
           id?: string
           level?: string | null
           name: string
+          phone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -294,6 +329,7 @@ export type Database = {
           id?: string
           level?: string | null
           name?: string
+          phone?: string | null
           updated_at?: string
           user_id?: string
         }
