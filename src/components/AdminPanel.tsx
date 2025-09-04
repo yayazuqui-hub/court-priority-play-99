@@ -1,8 +1,10 @@
 import { SystemState, PriorityQueue, Booking } from '@/hooks/useRealtimeData';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SystemControls } from './admin/SystemControls';
 import { QueueManagement } from './admin/QueueManagement';
 import { BookingsManagement } from './admin/BookingsManagement';
 import { ScheduleManagement } from './admin/ScheduleManagement';
+import { Settings, Users, Calendar, Trophy } from 'lucide-react';
 
 interface AdminPanelProps {
   systemState: SystemState | null;
@@ -13,14 +15,42 @@ interface AdminPanelProps {
 export function AdminPanel({ systemState, priorityQueue, bookings }: AdminPanelProps) {
   return (
     <div className="space-y-6">
-      <SystemControls systemState={systemState} />
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <QueueManagement priorityQueue={priorityQueue} />
-        <BookingsManagement bookings={bookings} />
-      </div>
+      <Tabs defaultValue="system" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="system" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Sistema
+          </TabsTrigger>
+          <TabsTrigger value="queue" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Fila
+          </TabsTrigger>
+          <TabsTrigger value="bookings" className="flex items-center gap-2">
+            <Trophy className="h-4 w-4" />
+            Marcações
+          </TabsTrigger>
+          <TabsTrigger value="schedule" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Horários
+          </TabsTrigger>
+        </TabsList>
 
-      <ScheduleManagement />
+        <TabsContent value="system" className="mt-6">
+          <SystemControls systemState={systemState} />
+        </TabsContent>
+
+        <TabsContent value="queue" className="mt-6">
+          <QueueManagement priorityQueue={priorityQueue} />
+        </TabsContent>
+
+        <TabsContent value="bookings" className="mt-6">
+          <BookingsManagement bookings={bookings} />
+        </TabsContent>
+
+        <TabsContent value="schedule" className="mt-6">
+          <ScheduleManagement />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
